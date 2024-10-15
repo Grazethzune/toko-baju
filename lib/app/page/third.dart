@@ -2,76 +2,138 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class MapsPage extends StatefulWidget {
+class ProductListLainnyaScreen extends StatefulWidget {
   @override
-  _MapsPageState createState() => _MapsPageState();
+  _ProductListScreenState createState() => _ProductListScreenState();
 }
 
-class _MapsPageState extends State<MapsPage> {
-  String apiKey = 'AIzaSyDotgFE2L3_WY7F8ae83n2CHSPqqgrqV_I';
-  String location = 'Eiffel Tower, Paris';
-  Map<String, dynamic>? locationData;
-
-  Future<void> fetchLocationData(String address) async {
-    final Uri url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey',
-    );
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        if (data['status'] == 'OK') {
-          setState(() {
-            locationData = data['results'][0]['geometry']['location'];
-          });
-        } else {
-          throw Exception('Failed to load location');
-        }
-      } else {
-        throw Exception('Failed to fetch data');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+class _ProductListScreenState extends State<ProductListLainnyaScreen> {
+  late Future<List<Product>> products;
 
   @override
   void initState() {
     super.initState();
-    fetchLocationData(location); // Mengambil lokasi saat halaman di-load
+    products = fetchProducts();
+  }
+
+  Future<List<Product>> fetchProducts() async {
+    final response =
+        await http.get(Uri.parse('https://fakestoreapi.com/products'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      // Filter products to include only men's and women's clothing
+      return jsonResponse
+          .map((product) => Product.fromJson(product))
+          .where((product) =>
+              product.category == "men's clothing" ||
+              product.category == "women's clothing")
+          .toList();
+    } else {
+      throw Exception('Failed to load products');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Google Maps API Integration'),
+        title: Text('Top Seller Lainnya'),
       ),
-      body: Center(
-        child: locationData == null
-            ? CircularProgressIndicator()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Location: $location',
-                    style: TextStyle(fontSize: 18),
+      body: FutureBuilder<List<Product>>(
+        future: products,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            List<Product> productList = snapshot.data!;
+
+            return ListView.builder(
+              itemCount: productList.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Image.network(
+                          productList[index].image,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                productList[index].title,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(height: 5),
+                              Text(productList[index].description,
+                                  maxLines: 2, overflow: TextOverflow.ellipsis),
+                              SizedBox(height: 5),
+                              Text(
+                                  'Price: \$${productList[index].price.toStringAsFixed(2)}',
+                                  style: TextStyle(color: Colors.green)),
+                              SizedBox(height: 5),
+                              Row(
+                                children: [
+                                  Icon(Icons.star,
+                                      color: Colors.yellow, size: 16),
+                                  Text('${productList[index].rating}',
+                                      style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Latitude: ${locationData!['lat']}',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Longitude: ${locationData!['lng']}',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
+                );
+              },
+            );
+          }
+        },
       ),
+    );
+  }
+}
+
+class Product {
+  final String title;
+  final String description;
+  final String image;
+  final double rating;
+  final double price;
+  final String category; // Tambahkan kategori
+
+  Product({
+    required this.title,
+    required this.description,
+    required this.image,
+    required this.rating,
+    required this.price,
+    required this.category, // Tambahkan kategori
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      title: json['title'],
+      description: json['description'],
+      image: json['image'],
+      price: (json['price'] is int)
+          ? (json['price'] as int).toDouble()
+          : (json['price'] as double),
+      rating: json['rating']['rate'].toDouble(),
+      category: json['category'], // Ambil kategori dari JSON
     );
   }
 }

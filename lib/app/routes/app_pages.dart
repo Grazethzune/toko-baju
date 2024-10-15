@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:tugas_1/app/page/home.dart';
+import 'package:tugas_1/app/page/login.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 
@@ -13,7 +14,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => HomePage(),
+      page: () => LoginPage(),
       binding: HomeBinding(),
     ),
   ];

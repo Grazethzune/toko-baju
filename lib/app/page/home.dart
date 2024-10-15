@@ -2,14 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tugas_1/app/data/models/product.dart';
 import 'package:tugas_1/app/modules/home/controllers/home_controller.dart';
+import 'package:tugas_1/app/modules/home/controllers/product_controller.dart';
 import 'package:tugas_1/app/page/image_picker.dart';
+import 'package:tugas_1/app/page/third.dart';
 
 class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
         title: _buildSearchBar(),
@@ -216,9 +220,17 @@ class HomePage extends GetView<HomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Top Seller',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Top Seller',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                  onPressed: () => Get.to(ProductListLainnyaScreen()),
+                  icon: Icon(Icons.arrow_right_alt, color: Colors.black)),
+            ],
           ),
           SizedBox(height: 10),
           _buildHorizontalProductList(),

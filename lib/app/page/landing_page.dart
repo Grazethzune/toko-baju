@@ -93,11 +93,7 @@ class LandingPage extends GetView {
           buildBottomNavigationMenu(context, landingPageController),
       body: Obx(() => IndexedStack(
             index: landingPageController.tabIndex.value,
-            children: [
-              HomePage(),
-              image_picker(),
-              MapsPage(),
-            ],
+            children: [HomePage(), image_picker(), ProductListLainnyaScreen()],
           )),
     ));
   }

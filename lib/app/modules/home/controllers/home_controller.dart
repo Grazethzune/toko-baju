@@ -32,7 +32,7 @@ class HomeController extends GetxController {
       'discount': '10%',
       'originalPrice': 'Rp 330.000',
       'location': 'Jakarta',
-      'image': 'assets/images/Project Basdat praktikum.png' // Example image
+      'image': 'assets/images/Frame 2.png' // Example image
     },
     {
       'name': 'Sepatu Adidas',
@@ -40,7 +40,7 @@ class HomeController extends GetxController {
       'discount': '10%',
       'originalPrice': 'Rp 400.000',
       'location': 'Jakarta',
-      'image': 'assets/images/Project Basdat praktikum.png' // Example image
+      'image': 'assets/images/Frame 2.png' // Example image
     }
   ].obs;
 
@@ -85,7 +85,7 @@ class HomeController extends GetxController {
         'discount': '50%',
         'originalPrice': 'Rp 100.000',
         'location': 'Jakarta',
-        'image': 'assets/images/Project Basdat praktikum.png'
+        'image': 'assets/images/Frame 2.png'
       },
       {
         'name': 'Sepatu Puma',
@@ -93,7 +93,7 @@ class HomeController extends GetxController {
         'discount': '10%',
         'originalPrice': 'Rp 330.000',
         'location': 'Jakarta',
-        'image': 'assets/images/Project Basdat praktikum.png'
+        'image': 'assets/images/Frame 2.png'
       }
     ]);
   }
