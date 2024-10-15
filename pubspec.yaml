@@ -1,0 +1,32 @@
+name: tugas_1
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment: 
+  sdk: '>=3.2.6 <4.0.0'
+
+dependencies: 
+  cupertino_icons: ^1.0.2
+  get: 4.6.6
+  
+  flutter:
+    sdk: flutter
+  http: ^0.13.5
+  google_maps_flutter: ^2.2.5
+  geolocator: ^9.0.2
+  flutter_map: ^3.0.0
+  latlong2: ^0.8.1  
+  image_picker: ^0.8.5+3
+  image_cropper: ^1.5.1
+  flutter_image_compress: ^1.1.0 
+
+dev_dependencies: 
+  flutter_lints: ^2.0.0
+  flutter_test: 
+    sdk: flutter
+
+flutter: 
+  uses-material-design: true
+  assets:
+    - assets/images/
+
