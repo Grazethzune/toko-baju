@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../modules/home/controllers/login_controller.dart';
+import 'package:tugas_1/app/modules/home/controllers/auth_controller.dart';
 
-class LoginPage extends GetView<LoginController> {
+class LoginPage extends StatelessWidget {
+  final AuthController authController = Get.put(AuthController());
+
+  // Tambahkan variabel untuk toggle antara Login dan Register
+  final RxBool isLogin = true.obs;
+
+  LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,70 +17,90 @@ class LoginPage extends GetView<LoginController> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Image.asset(
-                'assets/images/logo.png',
-                height: 100,
-              ),
-              const SizedBox(height: 10),
-
-              const Text(
-                'See more from naimike.co',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 20),
-
-              _buildTextField(
-                hintText: 'Mobile Number or Email',
-                controller: controller.emailController,
-              ),
-              const SizedBox(height: 10),
-              _buildTextField(
-                hintText: 'Password',
-                controller: controller.passwordController,
-                obscureText: true,
-              ),
-              const SizedBox(height: 10),
-              _buildTextField(
-                hintText: 'Full Name',
-                controller: controller.fullNameController,
-              ),
-              const SizedBox(height: 10),
-              _buildTextField(
-                hintText: 'Username',
-                controller: controller.usernameController,
-              ),
-              const SizedBox(height: 20),
-
-              const Text(
-                'By signing up, you agree to our Terms & Privacy Policy',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-
-              ElevatedButton(
-                onPressed: controller.register,
-                child: const Text('Sign Up'),
-                style: ElevatedButton.styleFrom(
-                  minimumSize:
-                      const Size(double.infinity, 50), // Button full width
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+          child: Obx(
+            () => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/logo.png', height: 100),
+                const SizedBox(height: 10),
+                Text(
+                  isLogin.value
+                      ? 'Login to naimike.co'
+                      : 'Register on naimike.co',
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  hintText: 'Email',
+                  controller: authController.emailController,
+                ),
+                const SizedBox(height: 10),
+                _buildTextField(
+                  hintText: 'Password',
+                  controller: authController.passwordController,
+                  obscureText: true,
+                ),
+                const SizedBox(height: 20),
+                // Tombol Login atau Register
+                ElevatedButton(
+                  onPressed: () {
+                    if (isLogin.value) {
+                      authController.loginUser(
+                        authController.emailController.text,
+                        authController.passwordController.text,
+                      );
+                    } else {
+                      authController.registerUser(
+                        authController.emailController.text,
+                        authController.passwordController.text,
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(isLogin.value ? 'Login' : 'Register'),
+                ),
+                const SizedBox(height: 10),
+                // Tombol untuk login menggunakan Google
+                //ElevatedButton.icon(
+                //onPressed: authController.signInWithGoogle,
+                //icon: Image.asset(
+                //'assets/images/google-icon.png',
+                //height: 24,
+                //),
+                //label: Text(isLogin.value ? 'Login with Google' : 'Register with Google'),
+                //style: ElevatedButton.styleFrom(
+                //minimumSize: const Size(double.infinity, 50),
+                //shape: RoundedRectangleBorder(
+                //borderRadius: BorderRadius.circular(8),
+                //),
+                //),
+                //),
+                const SizedBox(height: 10),
+                // Tombol untuk toggle Login/Register
+                TextButton(
+                  onPressed: () {
+                    isLogin.toggle();
+                    authController.clearControllers();
+                  },
+                  child: Text(
+                    isLogin.value
+                        ? "Don't have an account? Register"
+                        : "Already have an account? Login",
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // Helper method to create text fields
   Widget _buildTextField({
     required String hintText,
     required TextEditingController controller,

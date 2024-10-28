@@ -22,7 +22,7 @@ class HomePage extends GetView<HomeController> {
             onPressed: () {},
           ),
           InkWell(
-            onTap: () => Get.to(image_picker()),
+            onTap: () => Get.to(ImagePickerPage()),
             child: Obx(
               () => controller.selectedImagePath.value == ''
                   ? CircleAvatar(

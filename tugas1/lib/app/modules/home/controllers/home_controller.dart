@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  var isAuthenticated = false.obs;
   final tabIndex = 0.obs;
   var index = 0.obs;
   Timer? timer;
@@ -177,5 +179,11 @@ class HomeController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch cart items: $e');
     }
+  }
+
+  void logout() {
+    _auth.signOut();
+    isAuthenticated.value = false;
+    Get.offAllNamed('/login'); // Notifikasi logout
   }
 }
