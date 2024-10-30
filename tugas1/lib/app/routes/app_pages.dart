@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:tugas_1/app/page/landing_page.dart';
 import 'package:tugas_1/app/page/login.dart';
 import 'package:tugas_1/app/page/logout.dart';
 

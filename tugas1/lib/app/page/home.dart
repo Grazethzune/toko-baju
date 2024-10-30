@@ -1,13 +1,83 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:tugas_1/app/modules/home/controllers/home_controller.dart';
 import 'package:tugas_1/app/page/image_picker.dart';
 import 'package:tugas_1/app/page/detail_product.dart';
 import 'package:tugas_1/app/page/third.dart';
 
-class HomePage extends GetView<HomeController> {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final HomeController controller = Get.put(HomeController());
+
+  // Initialize Firebase and local notifications
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotification =
+      FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Request notification permissions and initialize local notifications
+    _requestPermissions();
+    _initializeLocalNotifications();
+
+    // Show welcome notification
+    _showWelcomeNotification();
+  }
+
+  void _requestPermissions() async {
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  void _initializeLocalNotifications() async {
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosSettings = DarwinInitializationSettings();
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+    await _localNotification.initialize(initSettings);
+  }
+
+  void _showWelcomeNotification() {
+    const androidDetails = AndroidNotificationDetails(
+      'welcome_channel',
+      'Welcome Notifications',
+      channelDescription: 'This channel is used for welcome notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+    const iosDetails = DarwinNotificationDetails();
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    // Show welcome notification
+    _localNotification.show(
+      0,
+      'Welcome!',
+      'Welcome to the Home Page!',
+      notificationDetails,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

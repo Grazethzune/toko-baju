@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:tugas_1/app/modules/home/controllers/home_controller.dart';
 import 'package:tugas_1/app/page/detail_product.dart';
 
